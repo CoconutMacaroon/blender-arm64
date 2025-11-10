@@ -20,10 +20,10 @@ As a real-world test on a GB10 system, [the Classroom demo](https://www.blender.
 > [!CAUTION]
 > As this process manually installs system files and packages, **it may break your installation of DGX OS** and/or create conflicts with certain packages.
 
-Clone this repo, and run `builder.sh`.
+Clone this repo, `cd` into it, and run `bash ./builder.sh`.
 
-* The first time you run it, you'll need to download the NVIDIA OptiX SDK. After downloading the OptiX SDK installer, you should move it from `~/Downloads` to `~/` and let it install into `NVIDIA-OptiX-SDK-9.0.0-linux64-aarch64`.
-* After building Blender the first time, you'll probably want to comment-out `git apply spark.patch` along with these lines:
+* The first time you run it, you'll be prompted to download the NVIDIA OptiX SDK. After downloading the OptiX SDK installer, you should move it from `~/Downloads` to `~/` and let it install into `NVIDIA-OptiX-SDK-9.0.0-linux64-aarch64`.
+* After building Blender the first time you'll probably want to comment-out `git apply spark.patch` along with these lines:
   ```bash
   set +e
   make
