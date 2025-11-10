@@ -105,9 +105,9 @@ sudo make install
 
 # Blender
 cd "$HOME"/blender
-#set +e
-#make
-#set -e
+set +e
+make
+set -e
 cmake -G 'Unix Makefiles' -DOPTIX_INCLUDE_DIR="$HOME"/NVIDIA-OptiX-SDK-9.0.0-linux64-aarch64/include \
 -DWITH_CYCLES_CUDA_BINARIES=ON -DWITH_ALEMBIC=OFF -DWITH_MOD_FLUID=ON \
 -DWITH_BLENDER_THUMBNAILER=ON -DWITH_BUILDINFO=OFF -DWITH_BULLET=ON \
