@@ -29,6 +29,7 @@ Clone this repo, `cd` into it, and run `bash ./builder.sh`.
   make
   set -e
   ```
+* When building the Vulkan SDK, it may prompt you to configure Postfix. If so, I suggest selecting *Local only* and accepting the default name.
 * Certain features, such as NumPy, OpenColorIO, and OpenSSL may not work out of the box, but should be possible.
 
 If it crashes when you run it, see [this](https://devtalk.blender.org/t/ubuntu-24-04-build-from-source-blender-crashes-at-startup/40853/10).

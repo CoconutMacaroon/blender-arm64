@@ -16,14 +16,16 @@ fi
 
 set -x
 
+export SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 sudo apt-get update
-sudo apt-get install libxinerama-dev libxcursor-dev libxi-dev libglfw3-dev libboost-iostreams-dev libblosc-dev libjack-dev libpulse-dev libpipewire-0.3-dev libsndfile-dev libavdevice-dev libswscale-dev libavfilter-dev libavcodec-dev libavformat-dev curl git git-lfs libxrandr-dev ninja-build libjpeg-dev libepoxy-dev libshaderc-dev libfreetype-dev libjemalloc-dev libpugixml-dev libtiff-dev libwebp-dev libpotrace-dev libopenal-dev libfftw3-dev libglew-dev libglut-dev liblcms2-dev libyaml-cpp-dev libexpat-dev libpystring-dev pybind11-dev libosd-dev libimath-dev librubberband-dev libopenexr-dev
-cd "$HOME"
+sudo apt-get install libxinerama-dev libxcursor-dev libxi-dev libglfw3-dev libboost-iostreams-dev libblosc-dev libjack-dev libpulse-dev libpipewire-0.3-dev libsndfile-dev libavdevice-dev libswscale-dev libavfilter-dev libavcodec-dev libavformat-dev curl git git-lfs libxrandr-dev ninja-build libjpeg-dev libepoxy-dev libshaderc-dev libfreetype-dev libjemalloc-dev libpugixml-dev libtiff-dev libwebp-dev libpotrace-dev libopenal-dev libfftw3-dev libglew-dev libglut-dev liblcms2-dev libyaml-cpp-dev libexpat-dev libpystring-dev pybind11-dev libosd-dev libimath-dev librubberband-dev libopenexr-dev cmake pkg-config libxcb1-dev libx11-dev libxrandr-dev
+cd "$SCRIPT_DIR"
 
 # Download, verify, and extract Python, ISPC, and the Vulkan SDK
-[ -f "python.tar.xz" ]    || curl -Lo "python.tar.xz" 'https://www.python.org/ftp/python/3.11.14/Python-3.11.14.tar.xz'
-[ -f "ispc.tar.gz" ]      || curl -Lo "ispc.tar.gz" 'https://github.com/ispc/ispc/releases/download/v1.28.2/ispc-v1.28.2-linux.aarch64.tar.gz'
-[ -f "vulkansdk.tar.xz" ] || curl -Lo "vulkansdk.tar.xz" 'https://sdk.lunarg.com/sdk/download/1.4.328.1/linux/vulkansdk-linux-x86_64-1.4.328.1.tar.xz'
+[ -f "python.tar.xz" ]    || curl -Lo python.tar.xz 'https://www.python.org/ftp/python/3.11.14/Python-3.11.14.tar.xz'
+[ -f "ispc.tar.gz" ]      || curl -Lo ispc.tar.gz 'https://github.com/ispc/ispc/releases/download/v1.28.2/ispc-v1.28.2-linux.aarch64.tar.gz'
+[ -f "vulkansdk.tar.xz" ] || curl -Lo vulkansdk.tar.xz 'https://sdk.lunarg.com/sdk/download/1.4.328.1/linux/vulkansdk-linux-x86_64-1.4.328.1.tar.xz'
 echo "2f7d50f6e41d61607022dfeb7741df3a python.tar.xz" | md5sum -c
 echo "c42267566b8c17a2a00668e168f56087b41e55cf1cea047dd0631cf512d011f7 ispc.tar.gz" | sha256sum -c
 echo "241e75b56c91c0d210ed07a7c638ec05a3e5b0e4c66ba9f0ba0f102d823ad6bf vulkansdk.tar.xz" | sha256sum -c
@@ -32,16 +34,17 @@ tar xf ispc.tar.gz
 tar xf vulkansdk.tar.xz
 
 # Clone required repos
-[ -d "sse2neon" ]    || git clone https://github.com/DLTcollab/sse2neon "$HOME/sse2neon"
-[ -d "oneTBB" ]      || git clone https://github.com/uxlfoundation/oneTBB "$HOME/oneTBB"
-[ -d "OpenImageIO" ] || git clone https://github.com/AcademySoftwareFoundation/OpenImageIO "$HOME/OpenImageIO"
-[ -d "blender" ]     || git clone https://projects.blender.org/blender/blender.git "$HOME/blender"
-[ -d "oidn" ]        || git clone --recursive https://github.com/OpenImageDenoise/oidn.git "$HOME/oidn"
-[ -d "embree" ]      || git clone https://github.com/RenderKit/embree "$HOME/embree"
-[ -d "openvdb" ]     || git clone https://github.com/AcademySoftwareFoundation/openvdb "$HOME"/openvdb
-[ -d "openjpeg" ]    || git clone https://github.com/uclouvain/openjpeg.git "$HOME"/openjpeg
-[ -d "OpenColorIO" ] || git clone https://github.com/AcademySoftwareFoundation/OpenColorIO.git "$HOME"/OpenColorIO
-[ -d "minizip-ng" ]  || git clone https://github.com/zlib-ng/minizip-ng.git "$HOME"/minizip-ng
+cd "$SCRIPT_DIR"
+[ -d "sse2neon" ]    || git clone https://github.com/DLTcollab/sse2neon
+[ -d "oneTBB" ]      || git clone https://github.com/uxlfoundation/oneTBB
+[ -d "OpenImageIO" ] || git clone https://github.com/AcademySoftwareFoundation/OpenImageIO
+[ -d "blender" ]     || git clone https://projects.blender.org/blender/blender.git
+[ -d "oidn" ]        || git clone --recursive https://github.com/OpenImageDenoise/oidn.git
+[ -d "embree" ]      || git clone https://github.com/RenderKit/embree
+[ -d "openvdb" ]     || git clone https://github.com/AcademySoftwareFoundation/openvdb
+[ -d "openjpeg" ]    || git clone https://github.com/uclouvain/openjpeg.git
+[ -d "OpenColorIO" ] || git clone https://github.com/AcademySoftwareFoundation/OpenColorIO.git
+[ -d "minizip-ng" ]  || git clone https://github.com/zlib-ng/minizip-ng.git
 
 # Python
 if ! command -v python3.11 > /dev/null 2>&1; then
@@ -52,63 +55,63 @@ if ! command -v python3.11 > /dev/null 2>&1; then
 fi
 
 # oneTBB
-mkdir -pv "$HOME"/oneTBB/build
-cd "$HOME"/oneTBB/build
+mkdir -pv "$SCRIPT_DIR"/oneTBB/build
+cd "$SCRIPT_DIR"/oneTBB/build
 cmake -DTBB_TEST=OFF ..
 cmake --build .
 sudo cmake --install .
-cd "$HOME"/OpenImageIO
+cd "$SCRIPT_DIR"/OpenImageIO
 cmake -B build -DOpenImageIO_BUILD_MISSING_DEPS=all -S .
 cmake --build build --target install
 
 # OpenImageDenoise
-cd "$HOME"
+cd "$SCRIPT_DIR"
 mkdir -pv oidn/build
 cd oidn/build
-cmake -G Ninja -D ISPC_EXECUTABLE="$HOME"/ispc-v1.28.2-linux.aarch64/bin/ispc ..
+cmake -G Ninja -D ISPC_EXECUTABLE="$SCRIPT_DIR"/ispc-v1.28.2-linux.aarch64/bin/ispc ..
 ninja
 
 # Vulkan
-cd "$HOME"/1.4.328.1
-./vulkansdk --maxjobs vulkan-loader shaderc
+cd "$SCRIPT_DIR"/1.4.328.1
+./vulkansdk --skip-installing-deps --maxjobs vulkan-loader shaderc
 for dir in bin lib include share; do
-    sudo cp -rv "$HOME"/1.4.328.1/aarch64/$dir /usr/$dir/
+    sudo cp -rv "$SCRIPT_DIR"/1.4.328.1/aarch64/$dir /usr/$dir/
 done
 
 # Embree
-mkdir -pv "$HOME"/embree/build
-cd "$HOME"/embree/build
+mkdir -pv "$SCRIPT_DIR"/embree/build
+cd "$SCRIPT_DIR"/embree/build
 cmake ..
 make -j18
 sudo make install
 
 # OpenVDB
-mkdir -pv "$HOME"/openvdb/build
-cd "$HOME"/openvdb/build
+mkdir -pv "$SCRIPT_DIR"/openvdb/build
+cd "$SCRIPT_DIR"/openvdb/build
 cmake -DOPENVDB_BUILD_NANOVDB=ON ..
 make -j18
 sudo make install
 
 # OpenJPEG
-mkdir -pv "$HOME"/openjpeg/build
-cd "$HOME"/openjpeg/build
+mkdir -pv "$SCRIPT_DIR"/openjpeg/build
+cd "$SCRIPT_DIR"/openjpeg/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j18
 sudo make install
 
 # OpenColorIO
-mkdir -pv "$HOME"/OpenColorIO/build
-cd "$HOME"/OpenColorIO/build
+mkdir -pv "$SCRIPT_DIR"/OpenColorIO/build
+cd "$SCRIPT_DIR"/OpenColorIO/build
 cmake ..
 make -j18
 sudo make install
 
 # Blender
-cd "$HOME"/blender
+cd "$SCRIPT_DIR"/blender
 set +e
 make
 set -e
-cmake -G 'Unix Makefiles' -DOPTIX_INCLUDE_DIR="$HOME"/NVIDIA-OptiX-SDK-9.0.0-linux64-aarch64/include \
+cmake -G 'Unix Makefiles' -DOPTIX_INCLUDE_DIR="$SCRIPT_DIR"/NVIDIA-OptiX-SDK-9.0.0-linux64-aarch64/include \
 -DWITH_CYCLES_CUDA_BINARIES=ON -DWITH_ALEMBIC=OFF -DWITH_MOD_FLUID=ON \
 -DWITH_BLENDER_THUMBNAILER=ON -DWITH_BUILDINFO=OFF -DWITH_BULLET=ON \
 -DWITH_CODEC_FFMPEG=ON -DWITH_CODEC_SNDFILE=ON -DWITH_CYCLES_DEBUG=ON \
@@ -125,28 +128,28 @@ cmake -G 'Unix Makefiles' -DOPTIX_INCLUDE_DIR="$HOME"/NVIDIA-OptiX-SDK-9.0.0-lin
 -DWITH_GHOST_X11=ON -DWITH_GHOST_WAYLAND=OFF -DWITH_GHOST_WAYLAND_DYNLOAD=OFF -DWITH_OPENCOLORIO=ON \
 -DWITH_XR_OPENXR=OFF -DWITH_USD=OFF -DWITH_CYCLES_DEVICE_CUDA=ON -DWITH_CYCLES_DEVICE_HIP=OFF \
 -DWITH_NANOVDB=ON -DWITH_VULKAN_BACKEND=ON -DWITH_CYCLES=ON \
--DOPENIMAGEDENOISE_LIBRARY="$HOME"/oidn/build/libOpenImageDenoise.so \
--DOPENIMAGEDENOISE_OPENIMAGEDENOISE_LIBRARY="$HOME"/oidn/build/libOpenImageDenoise.so \
--DOPENIMAGEDENOISE_COMMON_LIBRARY="$HOME"/oidn/build/libOpenImageDenoise.so \
--DOPENIMAGEDENOISE_INCLUDE_DIR="$HOME"/oidn/include \
--DSSE2NEON_INCLUDE_DIR="$HOME"/sse2neon \
--DOPENIMAGEIO_INCLUDE_DIR="$HOME"/OpenImageIO/dist/include \
--DOPENIMAGEIO_LIBRARY="$HOME"/OpenImageIO/dist/lib/libOpenImageIO.so \
--DOPENIMAGEIO_TOOL="$HOME"/blender/OpenImageIO/dist/bin/oiiotool \
--DOPENIMAGEIO_UTIL_LIBRARY="$HOME"/OpenImageIO/dist/lib/libOpenImageIO_Util.so \
+-DOPENIMAGEDENOISE_LIBRARY="$SCRIPT_DIR"/oidn/build/libOpenImageDenoise.so \
+-DOPENIMAGEDENOISE_OPENIMAGEDENOISE_LIBRARY="$SCRIPT_DIR"/oidn/build/libOpenImageDenoise.so \
+-DOPENIMAGEDENOISE_COMMON_LIBRARY="$SCRIPT_DIR"/oidn/build/libOpenImageDenoise.so \
+-DOPENIMAGEDENOISE_INCLUDE_DIR="$SCRIPT_DIR"/oidn/include \
+-DSSE2NEON_INCLUDE_DIR="$SCRIPT_DIR"/sse2neon \
+-DOPENIMAGEIO_INCLUDE_DIR="$SCRIPT_DIR"/OpenImageIO/dist/include \
+-DOPENIMAGEIO_LIBRARY="$SCRIPT_DIR"/OpenImageIO/dist/lib/libOpenImageIO.so \
+-DOPENIMAGEIO_TOOL="$SCRIPT_DIR"/blender/OpenImageIO/dist/bin/oiiotool \
+-DOPENIMAGEIO_UTIL_LIBRARY="$SCRIPT_DIR"/OpenImageIO/dist/lib/libOpenImageIO_Util.so \
 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_VERBOSE_MAKEFILE=ON -DPYTHON_NUMPY_INCLUDE_DIRS=/usr/local/lib/python3.11/site-packages/numpy/_core/include \
 -DOPENCOLORIO_INCLUDE_DIR=x.so \
 ../build_linux
 
 # Blender launcher
-cat > "$HOME"/launchBlender <<EOL
+cat > "$SCRIPT_DIR"/launchBlender <<EOL
 #!/usr/bin/env bash
-export LD_LIBRARY_PATH=/usr/local/lib:/home/cocomac/embree/build:/home/cocomac/oidn/build:/home/cocomac/OpenImageIO/dist/lib
-$HOME/build_linux/bin/blender
+export LD_LIBRARY_PATH=/usr/local/lib:"$SCRIPT_DIR"/embree/build:/home/cocomac/oidn/build:"$SCRIPT_DIR"/OpenImageIO/dist/lib
+$SCRIPT_DIR/build_linux/bin/blender
 EOL
-chmod +x "$HOME"/launchBlender
+chmod +x "$SCRIPT_DIR"/launchBlender
 
-cat > "$HOME"/blender/spark.patch <<EOL
+cat > "$SCRIPT_DIR"/blender/spark.patch <<EOL
 diff --git a/intern/cycles/util/math_float3.h b/intern/cycles/util/math_float3.h
 index ce517c6d764..6bf6762879a 100644
 --- a/intern/cycles/util/math_float3.h
@@ -162,5 +165,6 @@ index ce517c6d764..6bf6762879a 100644
  #else
 EOL
 git apply spark.patch
+make -j18
 
 ## Missing from builder.sh: alembic OpenColorIO openssl openvdb
