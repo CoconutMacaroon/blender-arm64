@@ -103,15 +103,16 @@ sudo make install
 mkdir -pv "$SCRIPT_DIR"/OpenColorIO/build
 cd "$SCRIPT_DIR"/OpenColorIO/build
 cmake ..
-make -j18
+sudo make -j18
 sudo make install
 
 # Blender
 cd "$SCRIPT_DIR"/blender
+git switch blender-v5.0-release
 set +e
 make
 set -e
-cmake -G 'Unix Makefiles' -DOPTIX_INCLUDE_DIR="$SCRIPT_DIR"/NVIDIA-OptiX-SDK-9.0.0-linux64-aarch64/include \
+cmake -G 'Unix Makefiles' -DOPTIX_INCLUDE_DIR="$HOME"/NVIDIA-OptiX-SDK-9.0.0-linux64-aarch64/include \
 -DWITH_CYCLES_CUDA_BINARIES=ON -DWITH_ALEMBIC=OFF -DWITH_MOD_FLUID=ON \
 -DWITH_BLENDER_THUMBNAILER=ON -DWITH_BUILDINFO=OFF -DWITH_BULLET=ON \
 -DWITH_CODEC_FFMPEG=ON -DWITH_CODEC_SNDFILE=ON -DWITH_CYCLES_DEBUG=ON \
@@ -138,13 +139,13 @@ cmake -G 'Unix Makefiles' -DOPTIX_INCLUDE_DIR="$SCRIPT_DIR"/NVIDIA-OptiX-SDK-9.0
 -DOPENIMAGEIO_TOOL="$SCRIPT_DIR"/blender/OpenImageIO/dist/bin/oiiotool \
 -DOPENIMAGEIO_UTIL_LIBRARY="$SCRIPT_DIR"/OpenImageIO/dist/lib/libOpenImageIO_Util.so \
 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_VERBOSE_MAKEFILE=ON -DPYTHON_NUMPY_INCLUDE_DIRS=/usr/local/lib/python3.11/site-packages/numpy/_core/include \
--DOPENCOLORIO_INCLUDE_DIR=x.so \
+-DOPENCOLORIO_INCLUDE_DIR=/usr/local/include -DWITH_AUDASPACE=OFF \
 ../build_linux
 
 # Blender launcher
 cat > "$SCRIPT_DIR"/launchBlender <<EOL
 #!/usr/bin/env bash
-export LD_LIBRARY_PATH=/usr/local/lib:"$SCRIPT_DIR"/embree/build:/home/cocomac/oidn/build:"$SCRIPT_DIR"/OpenImageIO/dist/lib
+export LD_LIBRARY_PATH=/usr/local/lib:$SCRIPT_DIR/embree/build:$SCRIPT_DIR/oidn/build:$SCRIPT_DIR/OpenImageIO/dist/lib
 $SCRIPT_DIR/build_linux/bin/blender
 EOL
 chmod +x "$SCRIPT_DIR"/launchBlender
