@@ -2,6 +2,9 @@
 
 This guide explains how to compile Blender and the necessary dependencies from source to make it run on ARM64 Linux devices with CUDA, OptiX, and Vulkan, such as a GB10 system.
 
+> [!TIP]
+> A prebuilt binary for GB10 (DGX Spark) [is available here](https://github.com/CoconutMacaroon/blender-arm64/releases) (built by me, roughly using the build script)
+
 ## Rationale
 
 While Blender does exist in the Ubuntu repos, it's an older version of Blender. Snap only supports AMD64, and [Backports](https://help.ubuntu.com/community/UbuntuBackports) aren't currently available.
